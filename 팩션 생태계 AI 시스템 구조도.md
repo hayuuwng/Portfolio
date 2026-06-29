@@ -131,22 +131,22 @@ graph TD
 
 ```mermaid
 graph TD
-    A["시작"] --> B{"점유율 검사 (Control_Ratio >= 0.95)"}
-    
-    B -->|"False"| C["종료"]
-    B -->|"True"| D["격리 실행 (NavMesh Link = False)"]
-    
-    D --> E["오프스크린 연산 (시야 밖 엔티티 호출)"]
-    E --> F{"확률 분기"}
-    
-    F -->|"70% 확률"| G["물리 연산 배제 후 Destroy 처리"]
-    F -->|"30% 확률"| H["FSM에 State_AbsolutePanic 강제 주입"]
-    
-    G --> I["전선 수복 (Spawn_Delay = 0 및 50:50 갱신)"]
-    H --> I
-    
-    I --> J["격리 해제 (NavMesh Link = True)"]
-    J --> C
+    A["Root (최상위 선택 노드)"] --> B{"1순위: 자정 작용 (IsAbsolutePanic)"}
+    A --> C{"2순위: 군집 붕괴 (IsAlphaDead)"}
+    A --> D{"3순위: 전투 상태 (Hostility >= 50)"}
+    A --> E{"4순위: 우호 상태 (Hostility <= 0)"}
+    A --> F["5순위: 기본 상태 (순찰/대기)"]
+
+    B -->|"True"| B1["[Action] 무장 해제 및 피아 식별 해제"]
+    C -->|"True"| C1["[Action] 전투 취소 및 도주"]
+    D -->|"True"| D1["[Sequence] 타겟 갱신 -> 사거리 접근 -> 공격"]
+    E -->|"True"| E1["[Sequence] 플레이어 추종 -> 지원"]
+
+    B1 --> Z["종료"]
+    C1 --> Z
+    D1 --> Z
+    E1 --> Z
+    F --> Z
 
 ```
 
