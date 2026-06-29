@@ -53,7 +53,7 @@ Portfolio: [Project DDIYONG 팩션 기획서](https://github.com/hayuuwng/Portfo
 * **FSM 최상위 노드 강제 주입을 통한 AI 기믹 설계:** 단순한 스탯 조절을 넘어서 상태 머신의 최상단 우선순위에 자아 붕괴 상태를 강제 할당하는 기믹을 기획. 이를 통해 AI가 무기를 버리고 도망가거나 아군을 공격하는 등 AI가 다채롭게 행동.
 ---
 
-# 트릭컬 플레이 이력
+### 트릭컬 플레이 이력
 
 <img width="1334" height="136" alt="image" src="https://github.com/user-attachments/assets/cd5f5130-05ad-4cef-b528-db61c4342469" />
 <img width="1110" height="351" alt="image" src="https://github.com/user-attachments/assets/e47c3260-afb8-4201-9754-06cd16da1adc" />
