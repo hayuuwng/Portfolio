@@ -37,16 +37,31 @@
 
 ## 2.1. 내부 연산 - 우호도 연산 플로우
 
-> **[시작]**
-> ⬇️
-> **[인지 범위 진입]** (Detection = True)
-> ⬇️
-> **[수치 계산]** 최종 우호도($Hostility_{Final}$) 산출
-> ⬇️
-> **[분기점]** $Hostility_{Final}$ 값 확인
-> ┣━ 🟢 **[$Hostility_{Final} \le 0$]** ➔ 우호(Friendly) 상태 적용 ➔ **[종료]**
-> ┣━ 🟡 **[$0 < Hostility_{Final} < 50$]** ➔ 중립(Neutral) 상태 유지 ➔ **[종료]**
-> ┗━ 🔴 **[$Hostility_{Final} \ge 50$]** ➔ 적대(Hostile) 상태 적용 ➔ 공격 로직 호출 ➔ **[종료]**
+graph TD
+    Start([시작]) --> Detect[인지 범위 진입: Detection = True]
+    Detect --> Calc[수치 계산: Hostility_Final 산출]
+    Calc --> Condition{최종 우호도 값 확인}
+    
+    Condition -->|Hostility <= 0| Friendly[우호 Friendly 상태 적용]
+    Condition -->|0 < Hostility < 50| Neutral[중립 Neutral 상태 유지]
+    Condition -->|Hostility >= 50| Hostile[적대 Hostile 상태 적용]
+    
+    Hostile --> Attack[공격 로직 호출]
+    
+    Friendly --> End([종료])
+    Neutral --> End
+    Attack --> End
+    
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef decision fill:#ffe6cc,stroke:#d79b00,stroke-width:2px;
+    classDef friendly fill:#d5e8d4,stroke:#82b366,stroke-width:2px;
+    classDef neutral fill:#fff2cc,stroke:#d6b656,stroke-width:2px;
+    classDef hostile fill:#f8cecc,stroke:#b85450,stroke-width:2px;
+    
+    class Condition decision;
+    class Friendly friendly;
+    class Neutral neutral;
+    class Hostile,Attack hostile;
 
 ### 2.1.1. 우호도 연산
 
@@ -70,20 +85,33 @@
 
 ## 3. 내부 연산 상세 - 맵 자정 작용(초기화) 플로우
 
-> **[시작]**
-> ⬇️
-> **[점유율 검사]** 특정 팩션 `Control_Ratio` $\ge 0.95$ (True)
-> ⬇️
-> **[격리 실행]** 현재 방의 `NavMesh Link` = False (플레이어 고립)
-> ⬇️
-> **[오프스크린 연산]** 카메라 시야(Frustum) 밖 지배 팩션 엔티티 호출
-> ┣━ 🔴 **[70% 확률]** ➔ 물리 연산 배제 후 `Destroy()` 처리
-> ┗━ 🟡 **[30% 확률]** ➔ 최상위 FSM 노드에 `State_AbsolutePanic` 강제 주입
-> ⬇️
-> **[전선 수복]** 반대 팩션 스폰 대기 시간($Spawn_{Delay} = 0$) 적용 및 50:50 영토 갱신
-> ⬇️
-> **[격리 해제 및 종료]** `NavMesh Link` = True
-
+graph TD
+    Start([시작]) --> CheckRatio{점유율 검사: Control_Ratio >= 0.95}
+    
+    CheckRatio -->|False| End([종료])
+    CheckRatio -->|True| Lockdown[격리 실행: 현재 방의 NavMesh Link = False]
+    
+    Lockdown --> OffScreen[오프스크린 연산: 시야 밖 지배 팩션 엔티티 호출]
+    OffScreen --> Random{확률 분기}
+    
+    Random -->|70% 확률| Destroy[물리 연산 배제 후 Destroy 처리]
+    Random -->|30% 확률| Panic[최상위 FSM 노드에 State_AbsolutePanic 강제 주입]
+    
+    Destroy --> Restore[전선 수복: 반대 팩션 Spawn_Delay = 0 및 50:50 영토 갱신]
+    Panic --> Restore
+    
+    Restore --> Unlock[격리 해제: NavMesh Link = True]
+    Unlock --> End
+    
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef decision fill:#ffe6cc,stroke:#d79b00,stroke-width:2px;
+    classDef process fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px;
+    classDef critical fill:#f8cecc,stroke:#b85450,stroke-width:2px;
+    
+    class CheckRatio,Random decision;
+    class Lockdown,OffScreen,Unlock process;
+    class Destroy,Panic critical;
+    
 ### 3.1.1. 자정 작용 연산
 
 * 특정 세력이 맵을 과도하게 독점하여 시스템적 임계치를 넘었을 때, 프레임 드랍 없이 생태계를 강제 리셋하기 위해 호출되는 비동기 연산이다.
