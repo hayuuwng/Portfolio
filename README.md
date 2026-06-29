@@ -21,6 +21,12 @@ Mail: hayuuwng@gmail.com | Phone Number: 010-5102-2578
 
 ---
 
+### 경력 유무
+
+* **신입**
+
+---
+
 ### 개발 환경
 
 * **기획 및 문서화:** Markdown, Github, Notion, Excel, PowerPoint
