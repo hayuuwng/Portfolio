@@ -38,17 +38,18 @@
 ## 2.1. 내부 연산 - 우호도 연산 플로우
 
 ```mermaid
-    A[시작] --> B[인지 범위 진입: Detection = True]
-    B --> C[수치 계산: Hostility_Final 산출]
-    C --> D{최종 우호도 값 확인}
+graph TD
+    A["시작"] --> B["인지 범위 진입 (Detection = True)"]
+    B --> C["수치 계산 (Hostility_Final 산출)"]
+    C --> D{"최종 우호도 값 확인"}
     
-    D -->|Hostility <= 0| E[우호 Friendly 상태 적용]
-    D -->|0 < Hostility < 50| F[중립 Neutral 상태 유지]
-    D -->|Hostility >= 50| G[적대 Hostile 상태 적용]
+    D -->|"Hostility <= 0"| E["우호 (Friendly) 상태 적용"]
+    D -->|"0 < Hostility < 50"| F["중립 (Neutral) 상태 유지"]
+    D -->|"Hostility >= 50"| G["적대 (Hostile) 상태 적용"]
     
-    G --> H[공격 로직 호출]
+    G --> H["공격 로직 호출"]
     
-    E --> I[종료]
+    E --> I["종료"]
     F --> I
     H --> I
 ```
@@ -77,21 +78,22 @@
 ## 3. 내부 연산 상세 - 맵 자정 작용(초기화) 플로우
 
 ```mermaid
-    A[시작] --> B{점유율 검사: Control_Ratio >= 0.95}
+graph TD
+    A["시작"] --> B{"점유율 검사 (Control_Ratio >= 0.95)"}
     
-    B -->|False| C[종료]
-    B -->|True| D[격리 실행: NavMesh Link = False]
+    B -->|"False"| C["종료"]
+    B -->|"True"| D["격리 실행 (NavMesh Link = False)"]
     
-    D --> E[오프스크린 연산: 시야 밖 지배 팩션 엔티티 호출]
-    E --> F{확률 분기}
+    D --> E["오프스크린 연산 (시야 밖 지배 팩션 엔티티 호출)"]
+    E --> F{"확률 분기"}
     
-    F -->|70% 확률| G[물리 연산 배제 후 Destroy 처리]
-    F -->|30% 확률| H[최상위 FSM 노드에 State_AbsolutePanic 강제 주입]
+    F -->|"70% 확률"| G["물리 연산 배제 후 Destroy 처리"]
+    F -->|"30% 확률"| H["최상위 FSM 노드에 State_AbsolutePanic 강제 주입"]
     
-    G --> I[전선 수복: 팩션 Spawn_Delay = 0 및 50:50 영토 갱신]
+    G --> I["전선 수복 (Spawn_Delay = 0 및 50:50 영토 갱신)"]
     H --> I
     
-    I --> J[격리 해제: NavMesh Link = True]
+    I --> J["격리 해제 (NavMesh Link = True)"]
     J --> C
 ```
     
