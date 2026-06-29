@@ -4,7 +4,7 @@
 
 Mail: hayuuwng@gmail.com | Phone Number: 010-5102-2578
 
-Portfolio: [토이 프로젝트로 개발한 포모도로 타이머](https://drive.google.com/drive/folders/1On4TmVror_CbCgTY4cJyyB_Z8u0bPrzN?usp=sharing), [C언어 코드 모음](https://github.com/hayuuwng/Assignment)
+Portfolio: [Project DDIYONG 팩션 기획서](https://github.com/hayuuwng/Portfolio/blob/main/AI%20%EA%B8%B0%ED%9A%8D%EC%84%9C.md)[토이 프로젝트로 개발한 포모도로 타이머](https://drive.google.com/drive/folders/1On4TmVror_CbCgTY4cJyyB_Z8u0bPrzN?usp=sharing), [C언어 코드 모음](https://github.com/hayuuwng/Assignment)
 
 ---
 
