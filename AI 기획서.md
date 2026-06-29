@@ -37,7 +37,7 @@
 
 ## 2.1. 내부 연산 - 우호도 연산 플로우
 
-graph TD
+```mermaid
     A[시작] --> B[인지 범위 진입: Detection = True]
     B --> C[수치 계산: Hostility_Final 산출]
     C --> D{최종 우호도 값 확인}
@@ -51,6 +51,7 @@ graph TD
     E --> I[종료]
     F --> I
     H --> I
+```
     
 
 ### 2.1.1. 우호도 연산
@@ -75,7 +76,7 @@ graph TD
 
 ## 3. 내부 연산 상세 - 맵 자정 작용(초기화) 플로우
 
-graph TD
+```mermaid
     A[시작] --> B{점유율 검사: Control_Ratio >= 0.95}
     
     B -->|False| C[종료]
@@ -92,6 +93,7 @@ graph TD
     
     I --> J[격리 해제: NavMesh Link = True]
     J --> C
+```
     
 ### 3.1.1. 자정 작용 연산
 
