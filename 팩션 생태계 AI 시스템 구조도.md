@@ -115,3 +115,50 @@ graph TD
 3. **오프스크린(시야 밖) 엔티티에 대한 데이터 조작을 실행한다.**
 * **3.1.** 렌더링되지 않는 구역의 지배 세력 엔티티 배열을 순회하며 무작위 70%는 `Destroy()` 함수로 삭제한다.
 * **3.2.** 남은 30%의 개체는 FSM에 [Absolute Panic] 상태를 주입하여 무장 해제 및 피아 식별 불가 상태로 만든다.
+
+
+---
+
+### 1. 팩션 AI 전체 계층 구조 (BT Hierarchy)
+
+| 우선순위 | 계층 | 발동 조건) | 실행 태스크 |
+| --- | --- | --- | --- |
+| **1순위** | **System Override** (시스템 개입) | `IsAbsolutePanic == True` (점유율 95% 초과 시) | 무장 해제, 피아 식별 해제, 무작위 배회 |
+| **2순위** | **Group Trauma** (군집 붕괴) | `IsAlphaDead == True` (방 내부 리더 사망 시) | 전투 취소, 맵 외곽으로 도주 및 대기 |
+| **3순위** | **Combat** (적대 및 전투) | `Hostility >= 50` (플레이어 또는 적대 팩션 감지) | 타겟 선정, 추격(NavMesh), 스킬 연산 및 공격 |
+| **4순위** | **Support** (우호 및 지원) | `Hostility <= 0` (플레이어 왜곡도 기반 친밀) | 플레이어 추종, 버프 캐스팅 |
+| **5순위** | **Default** (중립 및 기본) | 위 조건 모두 불만족 시 (평시 상태) | 지정된 웨이포인트 순찰, 수면, 자원 채집 |
+
+---
+
+### 2. 전체 비헤이비어 트리 구조도
+
+```mermaid
+graph TD
+    Root["Root (최상위 선택 노드)"] --> Tier1{"1순위 검사: 자정 작용 발생?"}
+    
+    Tier1 -->|"Yes (IsAbsolutePanic = True)"| Action1["[Task] 무장 해제 및 피아 식별 해제 (자아 붕괴)"]
+    Tier1 -->|"No"| Tier2{"2순위 검사: 리더(Alpha)가 사망했는가?"}
+    
+    Tier2 -->|"Yes (IsAlphaDead = True)"| Action2["[Task] 전투 강제 취소 및 맵 외곽 도주 (위압됨)"]
+    Tier2 -->|"No"| Tier3{"3순위 검사: 적대 수치(Hostility) >= 50 ?"}
+    
+    Tier3 -->|"Yes"| Action3["[Sequence] 타겟 갱신 -> 사거리 접근 -> 공격 로직 수행"]
+    Tier3 -->|"No"| Tier4{"4순위 검사: 우호 수치(Hostility) <= 0 ?"}
+    
+    Tier4 -->|"Yes"| Action4["[Sequence] 플레이어 추종 -> 길 비켜주기 / 버프 제공"]
+    Tier4 -->|"No (기본 상태)"| Action5["[Selector] 웨이포인트 순찰 OR 대기루틴 수행"]
+    
+    classDef root fill:#f5f5f5,stroke:#666,stroke-width:2px;
+    classDef check fill:#ffe6cc,stroke:#d79b00,stroke-width:2px;
+    classDef task fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px;
+    classDef combat fill:#f8cecc,stroke:#b85450,stroke-width:2px;
+    
+    class Root root;
+    class Tier1,Tier2,Tier3,Tier4 check;
+    class Action1,Action2,Action4,Action5 task;
+    class Action3 combat;
+
+```
+
+---
