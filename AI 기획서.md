@@ -38,30 +38,20 @@
 ## 2.1. 내부 연산 - 우호도 연산 플로우
 
 graph TD
-    Start([시작]) --> Detect[인지 범위 진입: Detection = True]
-    Detect --> Calc[수치 계산: Hostility_Final 산출]
-    Calc --> Condition{최종 우호도 값 확인}
+    A[시작] --> B[인지 범위 진입: Detection = True]
+    B --> C[수치 계산: Hostility_Final 산출]
+    C --> D{최종 우호도 값 확인}
     
-    Condition -->|Hostility <= 0| Friendly[우호 Friendly 상태 적용]
-    Condition -->|0 < Hostility < 50| Neutral[중립 Neutral 상태 유지]
-    Condition -->|Hostility >= 50| Hostile[적대 Hostile 상태 적용]
+    D -->|Hostility <= 0| E[우호 Friendly 상태 적용]
+    D -->|0 < Hostility < 50| F[중립 Neutral 상태 유지]
+    D -->|Hostility >= 50| G[적대 Hostile 상태 적용]
     
-    Hostile --> Attack[공격 로직 호출]
+    G --> H[공격 로직 호출]
     
-    Friendly --> End([종료])
-    Neutral --> End
-    Attack --> End
+    E --> I[종료]
+    F --> I
+    H --> I
     
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef decision fill:#ffe6cc,stroke:#d79b00,stroke-width:2px;
-    classDef friendly fill:#d5e8d4,stroke:#82b366,stroke-width:2px;
-    classDef neutral fill:#fff2cc,stroke:#d6b656,stroke-width:2px;
-    classDef hostile fill:#f8cecc,stroke:#b85450,stroke-width:2px;
-    
-    class Condition decision;
-    class Friendly friendly;
-    class Neutral neutral;
-    class Hostile,Attack hostile;
 
 ### 2.1.1. 우호도 연산
 
@@ -86,31 +76,22 @@ graph TD
 ## 3. 내부 연산 상세 - 맵 자정 작용(초기화) 플로우
 
 graph TD
-    Start([시작]) --> CheckRatio{점유율 검사: Control_Ratio >= 0.95}
+    A[시작] --> B{점유율 검사: Control_Ratio >= 0.95}
     
-    CheckRatio -->|False| End([종료])
-    CheckRatio -->|True| Lockdown[격리 실행: 현재 방의 NavMesh Link = False]
+    B -->|False| C[종료]
+    B -->|True| D[격리 실행: NavMesh Link = False]
     
-    Lockdown --> OffScreen[오프스크린 연산: 시야 밖 지배 팩션 엔티티 호출]
-    OffScreen --> Random{확률 분기}
+    D --> E[오프스크린 연산: 시야 밖 지배 팩션 엔티티 호출]
+    E --> F{확률 분기}
     
-    Random -->|70% 확률| Destroy[물리 연산 배제 후 Destroy 처리]
-    Random -->|30% 확률| Panic[최상위 FSM 노드에 State_AbsolutePanic 강제 주입]
+    F -->|70% 확률| G[물리 연산 배제 후 Destroy 처리]
+    F -->|30% 확률| H[최상위 FSM 노드에 State_AbsolutePanic 강제 주입]
     
-    Destroy --> Restore[전선 수복: 반대 팩션 Spawn_Delay = 0 및 50:50 영토 갱신]
-    Panic --> Restore
+    G --> I[전선 수복: 팩션 Spawn_Delay = 0 및 50:50 영토 갱신]
+    H --> I
     
-    Restore --> Unlock[격리 해제: NavMesh Link = True]
-    Unlock --> End
-    
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef decision fill:#ffe6cc,stroke:#d79b00,stroke-width:2px;
-    classDef process fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px;
-    classDef critical fill:#f8cecc,stroke:#b85450,stroke-width:2px;
-    
-    class CheckRatio,Random decision;
-    class Lockdown,OffScreen,Unlock process;
-    class Destroy,Panic critical;
+    I --> J[격리 해제: NavMesh Link = True]
+    J --> C
     
 ### 3.1.1. 자정 작용 연산
 
