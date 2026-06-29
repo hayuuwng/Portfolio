@@ -10,6 +10,9 @@ Portfolio: [Project DDIYONG 팩션 기획서](https://github.com/hayuuwng/Portfo
 
 ###  인적 사항
 
+<img width="150" height="200" alt="image" src="https://github.com/user-attachments/assets/664255a6-1f14-4eb3-b438-4054d227f4d1" />
+
+
 * **생년월일 / 주민등록번호:** 2007.01.23 / 4042117
 
 ---
